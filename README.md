@@ -1,3 +1,7 @@
+[![license](https://img.shields.io/npm/l/starbound.js.svg?style=flat-square)](https://www.npmjs.com/package/starbound.js)
+[![npm version](https://img.shields.io/npm/v/starbound.js.svg?style=flat-square)](https://www.npmjs.com/package/starbound.js)
+[![npm downloads](https://img.shields.io/npm/dm/starbound.js.svg?style=flat-square)](https://www.npmjs.com/package/starbound.js)
+
 # starbound.js
 A Starbound RCON client
 
