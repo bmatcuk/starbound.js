@@ -19,11 +19,7 @@ function connect(password, userCallback) {
     delete this._callbacks[message.id];
     delete this._callbacks[-1];
 
-    if (response.authSuccessful)
-      this.emit('connect');
-    else
-      this.emit('error', new Error("Invalid password."));
-
+    this.emit('connect', response.authSuccessful);
     if (userCallback)
       userCallback(response.authSuccessful);
   };
@@ -32,7 +28,6 @@ function connect(password, userCallback) {
   // callback for that, in addition to a callback for the normal message id
   this._callbacks[-1] = {cb: callback, type: AuthResponse};
   this::send(message, callback, AuthResponse);
-  this.emit('connect');
 }
 
 function data(buffer) {
@@ -79,6 +74,11 @@ function data(buffer) {
   }
 }
 
+function end() {
+  this.disconnect();
+  this.emit('end');
+}
+
 function send(message, callback, responseType=Response) {
   if (!this._socket)
     throw new Error("Client is not connected.");
@@ -110,7 +110,7 @@ export default class Starbound extends EventEmitter {
     this._socket.on('connect', connect.bind(this, password, callback));
     this._socket.on('data', this::data);
     this._socket.on('drain', this.emit.bind('drain'));
-    this._socket.on('end', this.emit.bind('end'));
+    this._socket.on('end', this::end);
     this._socket.on('error', this.emit.bind('error'));
     this._socket.on('lookup', this.emit.bind('lookup'));
     this._socket.on('timeout', this.emit.bind('timeout'));
@@ -128,6 +128,8 @@ export default class Starbound extends EventEmitter {
 
     this._socket.destroy();
   }
+
+  get connected() { return !!this._socket; }
 
   get timeout() { return this._options.timeout || 0; }
   set timeout(t) {

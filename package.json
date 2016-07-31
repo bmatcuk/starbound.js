@@ -1,12 +1,11 @@
 {
   "name": "starbound.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Starbound RCON client.",
   "main": "build/index.js",
   "scripts": {
-    "prepublish": "npm build",
     "build": "babel src -d build",
-    "start": "npm build -- --watch",
+    "start": "npm run build -- --watch",
     "test": "mocha"
   },
   "repository": {
