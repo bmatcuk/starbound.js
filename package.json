@@ -1,6 +1,6 @@
 {
   "name": "starbound.js",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "A Starbound RCON client.",
   "main": "build/index.js",
   "scripts": {

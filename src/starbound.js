@@ -3,6 +3,7 @@ import {Socket} from 'net';
 import Auth from './messages/auth';
 import AuthResponse from './messages/auth-response';
 import Broadcast from './messages/broadcast';
+import Echo from './messages/echo';
 import Exec from './messages/exec';
 import List from './messages/list';
 import ListResponse from './messages/list-response';
@@ -142,6 +143,11 @@ export default class Starbound extends EventEmitter {
 
   broadcast(msg, callback) {
     const message = new Broadcast(this._getNextMessageId(), msg);
+    this::send(message, callback);
+  }
+
+  echo(msg, callback) {
+    const message = new Echo(this._getNextMessageId(), msg);
     this::send(message, callback);
   }
 
