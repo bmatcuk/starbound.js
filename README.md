@@ -33,7 +33,7 @@ sb.on('timeout', function() {
 });
 
 sb.on('error', function(err) {
-  console.log('There's been an error:', err.message);
+  console.log("There's been an error:", err.message);
 });
 
 sb.connect('password', function(successful) {
@@ -55,13 +55,17 @@ Basic functionality is implemented by these functions:
 
 * `new Starbound(host, port, options)`
   > Create a new instance of the Starbound RCON client.
+  >
   > * `host` - the host to connect to _(default: localhost)_
   > * `port` - the port to connect to _(default: 21026)_
   > * `options`
   >   * `timeout` - socket timeout in milliseconds _(default: 0 meaning "never")_
+  >     Note that this timeout only affects _our_ side of the connection.
+  >     Starbound will timeout its side eventually.
 
 * `sb.connect(password, callback)`
   > Connects to the server
+  >
   > `function callback(success)` _(optional)_
   > * Called after attempting to connect. If `success` is true, authentication
   >   was successful.
@@ -69,7 +73,8 @@ Basic functionality is implemented by these functions:
 * `sb.disconnect()`
   > Disconnect from the server.
 
-* `sb.timeout` or `sb.timeout = X`
+* `sb.timeout`
+  `sb.timeout = X`
   > Get or set the socket timeout in milliseconds (see `options.timeout` in the
   > constructor).
 
@@ -95,41 +100,48 @@ response with the message if you're listing to the `message` event (see
   > or uuid returned by `listUsers()`) for `reason`. If `time` is specified, the
   > ban will be temporary and will automatically be lifted after `time` seconds
   > have passed. This is an optional parameter. For permanent bans, either pass
-  > something falsy (`null`, `false`, `0`), or skip this parameter. Note: temp
+  > something falsey (`null`, `false`, `0`), or skip this parameter. Note: temp
   > bans might not survive a server restart.
+  >
   > `function callback()` _(optional)_
   > * Called after the ban hammer falls.
 
 * `sb.broadcast(message, callback)`
   > Broadcasts `message` to all players.
+  >
   > `function callback()` _(optional)_
   > * Called after the broadcast is sent.
 
 * `sb.echo(message, callback)`
   > The server will reply with `message`. Useful for "pinging" the server.
+  >
   > `function callback(response)` _(optional)_
   > * `response.body` should be equal to `message`.
 
 * `sb.kick(user, reason, callback)`
   > Kicks a `user` (which may be specified using the clientId, username, or
   > uuid returned by `listUsers()`) for `reason`.
+  >
   > `function callback()` _(optional)_
   > * Called after the user has been kicked.
 
 * `sb.listUsers(callback)`
   > Return a list of users that are currently logged in to the server.
+  >
   > `function callback(response)` _(optional)_
   > * `response.users` is an array of `{clientId, username, uuid}` objects.
   > * `response.body` is the raw response from the server.
 
 * `sb.sendCommand(command, callback)`
   > For forward compatibility: sends raw `command` to the server.
+  >
   > `function callback(response)` _(optional)_
   > * `response.body` contains the raw response from the server, if any.
 
 * `sb.serverReload(callback)`
   > Reload the server's assets (including mods). Does not reread the config.
   > Note: this will cause the server to appear to freeze for a few moments.
+  >
   > `function callback()` _(optional)_
   > * Called after the reload.
 
@@ -139,6 +151,7 @@ response with the message if you're listing to the `message` event (see
 * `sb.timewarp(amount, callback)`
   > Jumps the entire server ahead in time by `amount`. `amount` is a positive
   > integer representing the number of seconds to jump ahead.
+  >
   > `function callback()` _(optional)_
   > * Called after the timewarp.
 
@@ -146,11 +159,13 @@ response with the message if you're listing to the `message` event (see
   > Returns the coordinates of the `user` (may be specified via clientId,
   > username, or uuid as returned by `listUsers()`). These coordinates could
   > be used to `/warp` to the player in-game.
+  >
   > `function callback(response)` _(optional)_
   > * `response.body` will have the coordinates.
 
 * `sb.whisper(username, message, callback)`
   > Sends a private `message` (whisper) to the specified user via `username`.
+  >
   > `function callback()` _(optional)_
   > * Called after the whisper is sent.
 
