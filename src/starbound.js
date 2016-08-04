@@ -2,12 +2,19 @@ import EventEmitter from 'events';
 import {Socket} from 'net';
 import Auth from './messages/auth';
 import AuthResponse from './messages/auth-response';
+import Ban from './messages/ban';
 import Broadcast from './messages/broadcast';
 import Echo from './messages/echo';
 import Exec from './messages/exec';
+import Kick from './messages/kick';
 import List from './messages/list';
 import ListResponse from './messages/list-response';
 import Response from './messages/response';
+import ServerReload from './messages/server-reload';
+import Stop from './messages/stop';
+import Timewarp from './messages/timewarp';
+import WhereIs from './messages/where-is';
+import Whisper from './messages/whisper';
 
 function close(hadError) {
   this._socket = null;
@@ -88,6 +95,7 @@ function send(message, callback, responseType=Response) {
     this._callbacks[message.id] = {cb: callback, type: responseType};
 
   this._socket.write(message.toBuffer());
+  return message.id;
 }
 
 
@@ -141,24 +149,66 @@ export default class Starbound extends EventEmitter {
 
   _getNextMessageId() { return this._nextMessageId++; }
 
+
+
+  ban(user, reason, time, callback) {
+    if (time.constructor === Function && !callback) {
+      callback = time;
+      time = null;
+    }
+
+    const message = new Ban(this._getNextMessageId(), user, reason, time);
+    return this::send(message, callback);
+  }
+
   broadcast(msg, callback) {
     const message = new Broadcast(this._getNextMessageId(), msg);
-    this::send(message, callback);
+    return this::send(message, callback);
   }
 
   echo(msg, callback) {
     const message = new Echo(this._getNextMessageId(), msg);
-    this::send(message, callback);
+    return this::send(message, callback);
+  }
+
+  kick(user, reason, callback) {
+    const message = new Kick(this._getNextMessageId(), user, reason);
+    return this::send(message, callback);
   }
 
   listUsers(callback) {
     const message = new List(this._getNextMessageId());
-    this::send(message, callback, ListResponse);
+    return this::send(message, callback, ListResponse);
   }
 
   sendCommand(command, callback) {
     const message = new Exec(this._getNextMessageId(), command);
-    this::send(message, callback);
+    return this::send(message, callback);
+  }
+
+  serverReload(callback) {
+    const message = new ServerReload(this._getNextMessageId());
+    return this::send(message, callback);
+  }
+
+  stopServer() {
+    const message = new Stop(this._getNextMessageId());
+    return this::send(message);
+  }
+
+  timewarp(amount, callback) {
+    const message = new Timewarp(this._getNextMessageId(), amount);
+    return this::send(message, callback);
+  }
+
+  whereIs(user, callback) {
+    const message = new WhereIs(this._getNextMessageId(), user);
+    return this::send(message, callback);
+  }
+
+  whisper(username, msg, callback) {
+    const message = new Whisper(this._getNextMessageId(), username, msg);
+    return this::send(message, callback);
   }
 }
 
